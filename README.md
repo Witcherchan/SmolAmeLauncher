@@ -20,7 +20,6 @@ Sort the game versions into custom defined categories and launch the version you
 <p align="center">
     <img src="img/launcher.png" 
       alt="interface">
-    
 </p>
 <p align="center">
   <i>The Smol Ame Launcher interface.</i>
@@ -74,8 +73,8 @@ The Smol Ame Launcher is currently only available for Windows, however, both Smo
 # Download Game Versions
 
 The latest official version of Smol Ame is always available on [itch.io](https://moocow-games.itch.io/smol-ame).
-For a repository of all published versions (official, testing, and speedrun patch versions), see the resources tab on [speedrun.com/smol_ame](https://www.speedrun.com/smol_ame/resources).
-Modded versions used for speedrunning can be found under the resources tab on [www.speedrun.com/smol_ame](https://www.speedrun.com/smol_ame/resources).
+For a repository of all published versions (official, testing, and speedrun patch versions), see the resources tab at [speedrun.com/smol_ame](https://www.speedrun.com/smol_ame/resources).
+Modded versions used for speedrunning can be found under the resources tab at [speedrun.com/smol_ame](https://www.speedrun.com/smol_ame/resources).
 Alternatively, join the Smol Ame Speedrunning community Discord server [here](https://discord.gg/WpZydmdUGP) to browse the game-versions and modded-game-versions channels.
 
 
