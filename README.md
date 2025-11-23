@@ -17,11 +17,11 @@ This can result in a bit of a mess when runners have to juggle multiple copies o
 The Smol Ame Laucher is made to help organize the various game versions in a simple and efficient way.
 Sort the game versions into custom defined categories and launch the version you wish to play through the launcher.
 
-<figure align="center">
+<p align="center">
     <img src="img/launcher.png" 
       alt="interface">
     <figcaption>The Smol Ame Launcher interface.</figcaption>
-</figure>
+</p>
 <br />
 
 
@@ -40,26 +40,26 @@ Sort the game versions into custom defined categories and launch the version you
 
 1. Download the most recent release [here](../../releases). Download the .zip file and extract it in your desired location. Navigate into the extracted folder, it should contain the files and directories seen in the image below.
 
-<figure align="center">
+<p align="center">
     <img src="img/SAL_folder.png" 
       alt="main folder">
-</figure>
+</p>
 
 2. Before running the launcher we need to set up categories and install the desired versions of Smol Ame. To do this, first navigate into the "versions" folder (highlighted in the image above).
 
 3. The versions directory is where the different version categories are sorted. The launcher comes with the categories "Modded" and "Vanilla" pre-installed (as seen in the image below). To create a new category, simply create a new folder in the versions directory. To remove categories, simply delete the associated folder.
 
-<figure align="center">
+<p align="center">
     <img src="img/versions_folder.png" 
       alt="versions folder">
-</figure>
+</p>
 
 4. To install any Smol Ame version into the launcher, copy the .zip archive of the desired game version into any of the category directories (see how to download game versions [here](#download-game-versions)). In the example image below, we have installed versions 1.0 and 0418 in the Vanilla category.
 
-<figure align="center">
+<p align="center">
     <img src="img/folder_structure.png" 
       alt="folder structure">
-</figure>
+</p>
 
 5. We are now ready to play some Smol Ame! Return to the main directory and run SmolAmeLauncher.exe. Choose the category from the dropdown menu on the top left corner, select the game version from the list underneath and hit Play in the bottom right. If any game versions or categories do not appear in the launcher, try clicking the Refresh button in the bottom left.
 
