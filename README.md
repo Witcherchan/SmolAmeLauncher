@@ -20,7 +20,9 @@ Sort the game versions into custom defined categories and launch the version you
 <p align="center">
     <img src="img/launcher.png" 
       alt="interface">
+  <figure>  
     <figcaption align="center">The Smol Ame Launcher interface.</figcaption>
+  </figure>
 </p>
 <br />
 
