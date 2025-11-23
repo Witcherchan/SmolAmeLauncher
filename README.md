@@ -56,7 +56,7 @@ Sort the game versions into custom defined categories and launch the version you
       alt="versions folder">
 </p>
 
-4. To install any Smol Ame version into the launcher, copy the .zip archive of the desired game version into any of the category directories (see how to download game versions [here](#download-game-versions)). In the example image below, we have installed versions 1.0 and 0418 in the Vanilla category.
+4. To install any Smol Ame version into the launcher, copy the .zip archive of the desired game version into any of the category directories (see how to download game versions [here](#download-game-versions)). In the example image below, we have installed versions 1.0 and 210418.1 in the Vanilla category.
 
 <p align="center">
     <img src="img/folder_structure.png" 
