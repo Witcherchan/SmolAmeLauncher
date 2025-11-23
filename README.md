@@ -23,7 +23,7 @@ Sort the game versions into custom defined categories and launch the version you
     
 </p>
 <p align="center">
-  The Smol Ame Launcher interface.
+  <i>The Smol Ame Launcher interface.</i>
 </p>
 <br />
 
