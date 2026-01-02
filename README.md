@@ -105,14 +105,14 @@ If any game versions of categories don't update correctly, try clicking the "Ref
 
 In step 3 above, it is essential that the game folder is compressed into a .zip format and that the game's .exe file is located directly inside the .zip folder. Other compression formats or folder structures will not work. Fortunately, most game versions are available in this format by default in the download sources listed below.
 
-The Smol Ame Launcher is currently only available for Windows. However, both Smol Ame and the Launcher run well using Wine, especially Proton-GE.
+The Smol Ame Launcher is currently only available for Windows. However, both Smol Ame and the Launcher run well using Wine or Proton.
 
 
 # Download Game Versions
 
 The latest official version of Smol Ame is always available on [itch.io](https://moocow-games.itch.io/smol-ame).
 For a repository of all published versions (official, testing, and speedrun patch versions), see the resources tab at [speedrun.com/smol_ame](https://www.speedrun.com/smol_ame/resources).
-Modded versions used for speedrunning can be found under the resources tab at [speedrun.com/smol_ame](https://www.speedrun.com/smol_ame/resources).
+Modded versions used for speedrunning can be found under the resources tab at [speedrun.com/Smol_Ame_Mods](https://www.speedrun.com/Smol_Ame_Mods/resources).
 Alternatively, join the Smol Ame Speedrunning community Discord server [here](https://discord.gg/WpZydmdUGP) to browse the game-versions and modded-game-versions channels.
 
 
