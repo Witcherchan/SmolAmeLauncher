@@ -1,0 +1,80 @@
+[Settings]
+locationX = 100
+locationY = 100
+width = 400
+height = 800
+fontName = "Courier New"
+fontSize = 14.25
+fontStyle = 0
+SendHotkeysToGame = true
+ShowGameInfo = true
+AutoRemoveMutuallyExclusiveActions = true
+AutoBackupEnabled = true
+AutoBackupRate = 1
+AutoBackupCount = 100
+FindMatchCase = false
+LastFileName = ""
+CommunicationHost = "127.0.0.1"
+CommunicationPort = 19982
+RecentFiles = []
+themes = "Light"
+
+[LightThemes]
+Action = [ "2222FF" ]
+Angle = [ "EE22EE" ]
+Background = [ "FFFFFF" ]
+Breakpoint = [ "FFFFFF", "FF5555" ]
+Caret = [ "000000" ]
+ChangedLine = [ "000000", "FF8C00" ]
+Comma = [ "808080" ]
+Command = [ "D2691E" ]
+Comment = [ "00A000" ]
+CurrentLine = [ "20000000" ]
+Frame = [ "FF2222" ]
+LineNumber = [ "000000" ]
+PlayingFrame = [ "22A022" ]
+PlayingLine = [ "000000", "55FF55" ]
+SaveState = [ "FFFFFF", "4682B4" ]
+Selection = [ "20000000" ]
+ServiceLine = [ "C0C0C0" ]
+Status = [ "000000", "F2F2F2" ]
+
+[DarkThemes]
+Action = [ "8BE9FD" ]
+Angle = [ "FF79C6" ]
+Background = [ "282A36" ]
+Breakpoint = [ "F8F8F2", "FF5555" ]
+Caret = [ "AEAFAD" ]
+ChangedLine = [ "6272A4", "FFB86C" ]
+Comma = [ "6272A4" ]
+Command = [ "FFB86C" ]
+Comment = [ "95B272" ]
+CurrentLine = [ "20B4B6C7" ]
+Frame = [ "BD93F9" ]
+LineNumber = [ "6272A4" ]
+PlayingFrame = [ "F1FA8C" ]
+PlayingLine = [ "6272A4", "F1FA8C" ]
+SaveState = [ "F8F8F2", "4682B4" ]
+Selection = [ "20B4B6C7" ]
+ServiceLine = [ "44475A" ]
+Status = [ "F8F8F2", "383A46" ]
+
+[CustomThemes]
+Action = [ "268BD2" ]
+Angle = [ "D33682" ]
+Background = [ "FDF6E3" ]
+Breakpoint = [ "FDF6E3", "DC322F" ]
+Caret = [ "6B7A82" ]
+ChangedLine = [ "F8F8F2", "CB4B16" ]
+Comma = [ "808080" ]
+Command = [ "B58900" ]
+Comment = [ "859900" ]
+CurrentLine = [ "201A1300" ]
+Frame = [ "DC322F" ]
+LineNumber = [ "93A1A1" ]
+PlayingFrame = [ "6C71C4" ]
+PlayingLine = [ "FDF6E3", "6C71C4" ]
+SaveState = [ "FDF6E3", "268BD2" ]
+Selection = [ "201A1300" ]
+ServiceLine = [ "44475A" ]
+Status = [ "073642", "EEE8D5" ]

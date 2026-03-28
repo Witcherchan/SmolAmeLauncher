@@ -1,0 +1,59 @@
+{
+
+	"version":"1.2.1",
+
+	"colors":
+	{
+        "application_fg": "#242424",
+
+        "version_frame": "#C8C163",
+        "version_frame_border": "#99894B",
+
+		"description_frame": "#C8C163",
+		"description_frame_border": "#99894B",
+
+        "options_frame": "#C8C163",
+		"options_frame_border": "#99894B",
+
+        "remove_categories": "#C8C163",
+		"remove_categories_border": "#99894B",
+
+        "create_category": "#C8C163",
+		"create_category_border": "#99894B",
+
+        "remove_files": "#C8C163",
+		"remove_files_border": "#99894B",
+
+        "folder_title_color": "#4D3114",
+		"version_title_color": "#4D3114",
+		"last_played_text_color": "#4D3114",
+		"time_played_text_color": "#4D3114",
+		"total_play_time_text_color": "#4D3114",
+		"program_version_color": "#4D3114",
+
+        "remove_categories_text_color": "#4D3114",
+        "create_category_text_color": "#4D3114",
+        "remove_files_text_color": "#4D3114",
+
+   		"scrollable_frame": "#ECDFA0",
+
+   		"button_on": "#926029",
+        "button_selected": "#4D3114",
+        "button_hover": "#5d4325",
+
+		"menu": "#926029",
+		"menu_button": "#926029",
+		"menu_button_hover": "#5d4325",
+
+        "tas_frame": "#926029",
+		"tas_frame_border": "#5d4325",
+
+        "tas_checkbox": "#926029",
+        "tas_checkbox_background": "#926029",
+        "tas_checkbox_hover": "#5d4325",
+
+		"dropdown": "#926029",
+		"dropdown_hover": "#5d4325"
+	}
+}
+
