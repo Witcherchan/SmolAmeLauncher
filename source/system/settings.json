@@ -15,6 +15,9 @@
         "options_frame": "#C8C163",
 		"options_frame_border": "#99894B",
 
+		"username_frame": "#C8C163",
+		"username_frame_border": "#99894B",
+
         "remove_categories": "#C8C163",
 		"remove_categories_border": "#99894B",
 

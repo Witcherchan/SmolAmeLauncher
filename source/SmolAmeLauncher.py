@@ -173,7 +173,7 @@ class CreateNewCategory(CTkToplevel):
         self.lable.grid(row = 0, column = 0, padx = 10, pady = (10,0), columnspan = 2, sticky = "nsew")
 
         self.text_typer = CTkEntry(self.frame,placeholder_text="For example: Speedrun",font=("Arial", 28))
-        self.text_typer.grid(row=1,column=0,padx=10,pady=10,sticky="nsew", columnspan = 2)
+        self.text_typer.grid(row=2,column=0,padx=10,pady=10,sticky="nsew", columnspan = 2)
 
         confirm_button = CTkButton(self.frame,text="Confirm",command=self.confirm,fg_color=self.parent.colors["button_on"],
                                    hover_color=self.parent.colors["button_hover"])
@@ -450,7 +450,7 @@ class App(CTk):
         self.colors = self.settings["colors"]
 
         self.title("Smol Ame Launcher")
-        self.geometry("900x600")
+        self.geometry("900x640")
         self.resizable(False,False)
 
         self.grid_columnconfigure(1, weight=1)
@@ -469,16 +469,42 @@ class App(CTk):
         self.options_frame.grid_columnconfigure(2, weight=2)
         self.options_frame.grid_columnconfigure(3, weight=2)
 
+        self.username_frame = CTkFrame(self,fg_color=self.colors["username_frame"],border_width=4,
+                                                        border_color=self.colors["username_frame_border"],corner_radius=16)
+        self.username_frame.grid_columnconfigure(0, weight=1) 
+        self.username_frame.grid(row=1, column=0, padx=10, pady=(10, 0), sticky="nsew", columnspan=2)
+
+        self.username_frame.grid_columnconfigure(0, weight=0) # Label (Fixed width)
+        self.username_frame.grid_columnconfigure(1, weight=1) # Entry (Expands)
+        self.username_frame.grid_columnconfigure(2, weight=0) # Button (Fixed width)
+
+        # 1. First Column: The Label
+        self.user_label = CTkLabel(self.username_frame, text="Username:", font=("Arial", 16))
+        self.user_label.grid(row=0, column=0, padx=(20, 10), pady=10)
+
+        # 2. Second Column: The Textbox (Entry)
+        self.user_entry = CTkEntry(self.username_frame, placeholder_text="Enter name...")
+        self.user_entry.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
+
+        # 3. Third Column: The Button
+        self.user_save_btn = CTkButton(self.username_frame, 
+                                       text="Save", 
+                                       width=100,
+                                       command=self.set_username, # Your function here
+                                       fg_color=self.colors["button_on"],
+                                       hover_color=self.colors["button_hover"])
+        self.user_save_btn.grid(row=0, column=2, padx=(10, 20), pady=10)  
+
         self.versions_frame = CTkFrame(self,fg_color=self.colors["version_frame"],border_width=4,
                                                         border_color=self.colors["version_frame_border"],corner_radius=16)
-        self.versions_frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+        self.versions_frame.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
         self.versions_frame.grid_columnconfigure(0, weight=1)
         self.versions_frame.grid_rowconfigure(1,weight=6)
         self.versions_frame.grid_rowconfigure(2,weight=1)
 
         self.description_frame = CTkFrame(self,fg_color=self.colors["description_frame"], border_width=4,
                                                         border_color=self.colors["description_frame_border"], corner_radius=16)
-        self.description_frame.grid(row=1, column=1, padx=(0,10), pady=10, sticky="nsew")
+        self.description_frame.grid(row=2, column=1, padx=(0,10), pady=10, sticky="nsew")
 
 
         self.combo = []
@@ -523,19 +549,19 @@ class App(CTk):
         self.total_play_time_tittle.pack(padx=(30, 0), pady=(90, 0), anchor="w")
         self.total_play_time_tittle.configure(font=("Ariel", 32))
 
-        self.program_version_title = CTkLabel(self.description_frame, text=f"v{self.settings["version"]}",
-                                                            text_color=self.colors["program_version_color"], )
+        self.program_version_title = CTkLabel(self.description_frame, text=f"v{self.settings['version']}",
+                                                            text_color=self.colors['program_version_color'], )
         self.program_version_title.place(x=530,y=435)
         self.program_version_title.configure(font=("Ariel", 24))
 
         self.scrollable_button_frame = VersionsFrame(self.versions_frame,self)
-        self.scrollable_button_frame.grid(row=1,column=0,padx=20, pady=(10,0), sticky="nsew")
+        self.scrollable_button_frame.grid(row=2,column=0,padx=20, pady=(10,0), sticky="nsew")
 
         self.tas_frame = CTkFrame(self.versions_frame,fg_color=self.colors["tas_frame"],border_width=4,
                                                         border_color=self.colors["tas_frame_border"],corner_radius=12,
                                                         height=42,width=80)
         self.tas_frame.grid_propagate(False)
-        self.tas_frame.grid(row=2, column=0, padx=10, sticky="")
+        self.tas_frame.grid(row=3, column=0, padx=10, sticky="")
         self.tas_frame.grid_rowconfigure(0, weight=1)
         self.tas_frame.grid_columnconfigure(0, weight=1)
 
@@ -543,10 +569,10 @@ class App(CTk):
         self.tas_checkbox.grid(row=0,column=0, pady=0, sticky="")
 
         self.button_play = CTkButton(self, text="Play", command=self.start_game,fg_color=self.colors["button_on"],hover_color=self.colors["button_hover"])
-        self.button_play.grid(row=2, column=1, padx=(0,10), pady=10, sticky="nsew")
+        self.button_play.grid(row=3, column=1, padx=(0,10), pady=10, sticky="nsew")
 
         self.button_refresh = CTkButton(self, state="normal", text="Refresh",command=lambda refresh = True: self.refresh_folders(refresh), fg_color=self.colors["button_on"],hover_color=self.colors["button_hover"])
-        self.button_refresh.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
+        self.button_refresh.grid(row=3, column=0, padx=10, pady=10, sticky="nsew")
 
         self.scrollable_button_frame.switch_folders(self.selected_folder)
 
@@ -679,14 +705,14 @@ class App(CTk):
         self.version_title.configure(text=f"- {tn} -",font=("Ariel",vts))
         self.folder_tile.configure(text=f"- {fn} -",font=("Ariel",fts))
         if tn != "Select version":
-            self.last_played_tittle.configure(text=f"Last played: {self.stats["version_play_time"][tn]['last_played']}")
-            self.time_played_tittle.configure(text=f"Time played: {self.format_playtime(self.stats["version_play_time"][tn]['time_played'])}")
+            self.last_played_tittle.configure(text=f"Last played: {self.stats['version_play_time'][tn]['last_played']}")
+            self.time_played_tittle.configure(text=f"Time played: {self.format_playtime(self.stats['version_play_time'][tn]['time_played'])}")
         if reset:
             self.last_played_tittle.configure(text=f"Last played: ")
             self.time_played_tittle.configure(text=f"Time played: ")
 
         self.total_play_time_tittle.configure(
-            text=f"Total play time: {self.format_playtime(self.stats["total_play_time"])}")
+            text=f"Total play time: {self.format_playtime(self.stats['total_play_time'])}")
 
     def change_folder(self,choice):
         self.selected_folder = choice
@@ -1033,6 +1059,9 @@ class App(CTk):
         print("Script crashed!")
         print("".join(format_exception(exc_type, exc_value, exc_traceback)))
         self.cleanup()
+    
+    def set_username(self):
+        print("username set")
 
 app = App()
 app.mainloop()
