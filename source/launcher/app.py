@@ -34,6 +34,7 @@ class App(CTk):
         self.versions_path  = self.program_path + "\\versions\\"
         self.setting_path   = self.program_path + "\\system\\settings.json"
         self.stats_path     = self.program_path + "\\system\\stats.json"
+        self.bepinex_path   = self.program_path + "\\BepinEx"
         self.tas_path       = self.program_path + "\\TAS"
         self.tas_exe_path   = "\\TAS.Studio\\TAS.Studio.exe"
         self.temp_perm_path = self.program_path + "\\system\\temp"

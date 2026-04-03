@@ -28,6 +28,7 @@ class GameRunner:
         self.game_process: Popen | None = None
         self.tas_process: Popen | None = None
         self.game_start_time: float = 0.0
+        self.exe_path: str = ""
 
     # ------------------------------------------------------------------
     # Public entry points
@@ -104,16 +105,10 @@ class GameRunner:
         # --- Write Username ---
         self._write_username_file()
 
-        # --- Optional TAS injection ---
-        if app.tas_checkbox.get():
-            if not self._inject_tas(zip_path):
-                self._reset_ui()
-                return
-
         # --- Find .exe ---
         app.button_play.configure(text="Finding '.exe' file...")
-        exe_path = find_exe(app.temp_perm_path)
-        if exe_path is None:
+        self.exe_path = find_exe(app.temp_perm_path)
+        if self.exe_path is None:
             mb.showerror(
                 "Error",
                 f"ERROR: No valid .exe found in: {zip_path}!\n\n"
@@ -122,12 +117,18 @@ class GameRunner:
             self._reset_ui()
             return
 
+        # --- Optional TAS injection ---
+        if app.tas_checkbox.get():
+            if not self._inject_tas(zip_path):
+                self._reset_ui()
+                return
+
         # --- Mark last played & launch ---
         app.update_last_played(version_name)
-        print("Running:", exe_path)
+        print("Running:", self.exe_path)
         self.game_start_time = time()
         app.button_play.configure(text="Running...")
-        self.game_process = Popen([exe_path])
+        self.game_process = Popen([self.exe_path])
         app.iconify()
 
         # Begin polling loop (on the main thread via after())
@@ -172,6 +173,26 @@ class GameRunner:
         app = self.app
         app.button_play.configure(text="Copying TAS files...")
 
+        print(f"Architecture checking of {self.exe_path}")
+        arch = self._get_exe_arch(self.exe_path)
+        bepinex_path = ""
+        if arch == "x64":
+            bepinex_path = join(app.bepinex_path, "x64")
+        elif arch == "x86":
+            bepinex_path = join(app.bepinex_path, "x86")
+        else:
+            print("Could not determine architecture.")
+
+        print(f" bepinex path {app.bepinex_path}")
+
+        success_bepinex = copy_directory_contents(
+            app.bepinex_path,
+            app.temp_perm_path,
+            on_error=lambda p: mb.showerror(
+                "Error", f"ERROR: Couldn't copy BepinEx files: {zip_path}"
+            ),
+        )
+
         success = copy_directory_contents(
             app.tas_path,
             app.temp_perm_path,
@@ -179,7 +200,7 @@ class GameRunner:
                 "Error", f"ERROR: Couldn't copy TAS files: {zip_path}"
             ),
         )
-        if not success:
+        if not success or not success_bepinex:
             return False
 
         app.button_play.configure(text="Running TAS...")
@@ -191,6 +212,35 @@ class GameRunner:
             return False
 
         return True
+
+    def _get_exe_arch(self, exe_path):
+        import struct
+
+        """
+        Returns 'x86', 'x64', or 'unknown' by reading the PE header.
+        """
+        try:
+            with open(exe_path, 'rb') as f:
+                # Check for 'MZ' header
+                if f.read(2) != b'MZ':
+                    return "unknown"
+                
+                # Get the offset to the PE header (at offset 0x3C)
+                f.seek(0x3C)
+                pe_offset = struct.unpack('<I', f.read(4))[0]
+                
+                # Seek to PE header: Signature (4 bytes) + Machine (2 bytes)
+                f.seek(pe_offset + 4)
+                machine = struct.unpack('<H', f.read(2))[0]
+                
+                if machine == 0x014c:
+                    return "x86"
+                elif machine == 0x8664:
+                    return "x64"
+                return "unknown"
+        except Exception as e:
+            print(f"Arch check failed: {e}")
+            return "unknown"
 
     def _poll_game_closed(self):
         """Called repeatedly via app.after() until the game process exits."""
