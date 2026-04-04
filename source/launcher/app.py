@@ -439,7 +439,12 @@ class App(CTk):
         
 
         if os.path.exists(self.mods_path):
-            mod_files = [f for f in os.listdir(self.mods_path) if os.path.isfile(os.path.join(self.mods_path, f))]
+            # os.path.splitext(f)[0] grabs the filename without the extension
+            mod_files = [
+                os.path.splitext(f)[0] 
+                for f in os.listdir(self.mods_path) 
+                if os.path.isfile(os.path.join(self.mods_path, f))
+            ]
         else:
             mod_files = []
         

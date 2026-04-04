@@ -117,11 +117,25 @@ class GameRunner:
             self._reset_ui()
             return
 
-        # --- Optional TAS injection ---
-        if app.tas_checkbox.get():
-            if not self._inject_tas(zip_path):
-                self._reset_ui()
-                return
+        # --- Optional Mods or TAS injection ---
+
+
+        has_active_mods = any(var.get() for var in app.scrollable_mods.mod_vars.values())
+        if app.tas_checkbox.get() or has_active_mods:
+            self._inject_bepinex(zip_path)
+
+            if app.tas_checkbox.get():
+                if not self._inject_tas(zip_path):
+                    self._reset_ui()
+                    return
+            
+            for mod_name, var in app.scrollable_mods.mod_vars.items():
+                if var.get():  # If the checkbox is checked
+                    mod_path = mod_name + ".zip"
+                    success = self._inject_mod(mod_path)
+                    if not success:
+                        # Uncheck the box in the UI if injection failed
+                        var.set(False)
 
         # --- Mark last played & launch ---
         app.update_last_played(version_name)
@@ -168,31 +182,34 @@ class GameRunner:
                 return version_name, zip_path
         return None
 
-    def _inject_tas(self, zip_path: str) -> bool:
-        """Copy TAS files into temp folder and launch TAS.exe. Returns success."""
-        app = self.app
-        app.button_play.configure(text="Copying TAS files...")
-
-        print(f"Architecture checking of {self.exe_path}")
+    def _inject_bepinex(self, zip_path: str) -> bool:
+        """Check Architecture and copy respective files based on it. Returns success."""
         arch = self._get_exe_arch(self.exe_path)
         bepinex_path = ""
         if arch == "x64":
-            bepinex_path = join(app.bepinex_path, "x64")
+            bepinex_path = join(self.app.bepinex_path, "x64")
         elif arch == "x86":
-            bepinex_path = join(app.bepinex_path, "x86")
+            bepinex_path = join(self.app.bepinex_path, "x86")
         else:
             print("Could not determine architecture.")
 
-        print(f" bepinex path {bepinex_path}")
-
         success_bepinex = copy_directory_contents(
             bepinex_path,
-            app.temp_perm_path,
+            self.app.temp_perm_path,
             on_error=lambda p: mb.showerror(
                 "Error", f"ERROR: Couldn't copy BepinEx files: {zip_path}"
             ),
         )
 
+        if not success_bepinex:
+            return False
+        
+        return True
+
+    def _inject_tas(self, zip_path: str) -> bool:
+        """Copy TAS files into temp folder and launch TAS.exe. Returns success."""
+        app = self.app
+        app.button_play.configure(text="Copying TAS files...")
         success = copy_directory_contents(
             app.tas_path,
             app.temp_perm_path,
@@ -200,7 +217,7 @@ class GameRunner:
                 "Error", f"ERROR: Couldn't copy TAS files: {zip_path}"
             ),
         )
-        if not success or not success_bepinex:
+        if not success:
             return False
 
         app.button_play.configure(text="Running TAS...")
@@ -241,6 +258,14 @@ class GameRunner:
         except Exception as e:
             print(f"Arch check failed: {e}")
             return "unknown"
+
+    def _inject_mod(self, mod_name):
+        """Extract Mod from ZIP and put it in BepinEx plugins folder"""
+        mod_path = join(self.app.mods_path, mod_name)
+        target_path = join(self.app.temp_perm_path, "BepinEx")
+        target_path = join(target_path, "plugins")
+        success = extract_zip(mod_path, target_path)
+        return success
 
     def _poll_game_closed(self):
         """Called repeatedly via app.after() until the game process exits."""
