@@ -7,6 +7,21 @@ App only handles:
   - High-level callbacks that delegate to core modules
 """
 
+import os
+import sys
+
+# --- STEP 1: FIX PATHS IMMEDIATELY ---
+if getattr(sys, 'frozen', False):
+    # In PyInstaller, all your folders are inside sys._MEIPASS
+    BASE_PATH = sys._MEIPASS
+    if BASE_PATH not in sys.path:
+        sys.path.insert(0, BASE_PATH)
+else:
+    # Running from source, go up one level from 'launcher/'
+    BASE_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if BASE_PATH not in sys.path:
+        sys.path.insert(0, BASE_PATH)
+
 import json
 from atexit import register
 from sys import excepthook
@@ -14,8 +29,6 @@ from traceback import format_exception
 from tkinter import PhotoImage
 
 from customtkinter import CTk, CTkFrame, CTkLabel, CTkButton, CTkOptionMenu, CTkCheckBox, CTkEntry
-import os
-import sys
 from os import getcwd
 from tkinter import font as tkfont
 
@@ -29,28 +42,20 @@ class App(CTk):
     def __init__(self):
         super().__init__()
 
-        # 1. Identify the Project Root
-        if getattr(sys, 'frozen', False):
-            # If running as EXE, root is where the EXE is
-            self.root_path = os.path.dirname(sys.executable)
-        else:
-            # If running as .py: 
-            self.root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
         # --- Paths ---
-        self.program_path   = self.root_path
-        self.icon_ico_path  = os.path.join(self.root_path, "system", "images", "icon_main_app.ico")
-        self.icon_png_path  = os.path.join(self.root_path, "system", "images", "icon_add_app.png")
+        self.program_path   = BASE_PATH
+        self.icon_ico_path  = os.path.join(self.program_path, "system", "images", "icon_main_app.ico")
+        self.icon_png_path  = os.path.join(self.program_path, "system", "images", "icon_add_app.png")
         self.icon_png       = PhotoImage(file=self.icon_png_path)
         
-        self.versions_path  = os.path.join(self.root_path, "versions")
-        self.mods_path      = os.path.join(self.root_path, "mods")
-        self.setting_path   = os.path.join(self.root_path, "system", "settings.json")
-        self.stats_path     = os.path.join(self.root_path, "system", "stats.json")
-        self.bepinex_path   = os.path.join(self.root_path, "BepinEx")
-        self.tas_path       = os.path.join(self.root_path, "TAS")
+        self.versions_path  = os.path.join(self.program_path, "versions")
+        self.mods_path      = os.path.join(self.program_path, "mods")
+        self.setting_path   = os.path.join(self.program_path, "system", "settings.json")
+        self.stats_path     = os.path.join(self.program_path, "system", "stats.json")
+        self.bepinex_path   = os.path.join(self.program_path, "BepinEx")
+        self.tas_path       = os.path.join(self.program_path, "TAS")
         self.tas_exe_path   = os.path.join(self.tas_path, "TAS.Studio", "TAS.Studio.exe")
-        self.temp_perm_path = os.path.join(self.root_path, "system", "temp")
+        self.temp_perm_path = os.path.join(self.program_path, "system", "temp")
 
         # --- Settings ---
         with open(self.setting_path, "r") as f:
@@ -553,16 +558,24 @@ class App(CTk):
 
     def on_closing(self):
         print("Window closed by user (X or ALT+F4)")
-        self.cleanup()
-        self.destroy()
+        # Just stop the UI and exit; atexit.register will handle the rest automatically
+        self.quit() # Stops mainloop
+        self.destroy() # Destroys widgets
 
     def cleanup(self):
+        # Check if cleanup was already done to avoid double-runs
+        if hasattr(self, "_cleaned") and self._cleaned:
+            return
+        self._cleaned = True
+        
         from launcher_utils.file_utils import clear_folder
         print("Running cleanup...")
 
-        self.game_runner.terminate_game()
+        # Ensure we don't crash during cleanup if objects aren't fully initialized
+        if hasattr(self, "game_runner"):
+            self.game_runner.terminate_game()
 
-        if hasattr(self, "temp_perm_path") and self.temp_perm_path:
+        if hasattr(self, "temp_perm_path") and os.path.exists(self.temp_perm_path):
             print("Cleaning temporary folder...")
             clear_folder(self.temp_perm_path)
 
@@ -571,7 +584,7 @@ class App(CTk):
             try:
                 self.stats_mgr.save()
             except Exception as e:
-                print("Error saving stats:", e)
+                print(f"Error saving stats: {e}")
 
         print("Cleanup complete.")
 

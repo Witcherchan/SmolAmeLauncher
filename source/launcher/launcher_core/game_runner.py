@@ -5,7 +5,8 @@ Handles launching, monitoring, and cleaning up the game process.
 from subprocess import Popen, TimeoutExpired
 from threading import Thread
 from time import time
-from os.path import join
+from os import makedirs
+from os.path import join, exists
 from tkinter import messagebox as mb
 
 from launcher_utils.file_utils import extract_zip, copy_directory_contents, find_exe, clear_folder
@@ -262,8 +263,8 @@ class GameRunner:
     def _inject_mod(self, mod_name):
         """Extract Mod from ZIP and put it in BepinEx plugins folder"""
         mod_path = join(self.app.mods_path, mod_name)
-        target_path = join(self.app.temp_perm_path, "BepinEx")
-        target_path = join(target_path, "plugins")
+        makedirs(mod_path, exist_ok=True)
+        target_path = join(self.app.temp_perm_path, "BepinEx", "plugins")
         success = extract_zip(mod_path, target_path)
         return success
 
