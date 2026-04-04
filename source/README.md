@@ -1,3 +1,3 @@
-build command
+build command: run from "source" folder
 
 pyinstaller --noconfirm --onedir --windowed --name "SmolAmeLauncher" --paths "." --add-data "launcher/launcher_core;launcher_core" --add-data "launcher/launcher_ui;launcher_ui" --add-data "launcher/launcher_utils;launcher_utils" --add-data "BepinEx;BepinEx" --add-data "mods;mods" --add-data "system;system" --add-data "TAS;TAS" --add-data "versions;versions" "launcher/app.py"
