@@ -132,8 +132,7 @@ class GameRunner:
             
             for mod_name, var in app.scrollable_mods.mod_vars.items():
                 if var.get():  # If the checkbox is checked
-                    mod_path = mod_name + ".zip"
-                    success = self._inject_mod(mod_path)
+                    success = self._inject_mod(mod_name)
                     if not success:
                         # Uncheck the box in the UI if injection failed
                         var.set(False)
@@ -154,10 +153,6 @@ class GameRunner:
         Creates username.txt in Smol Ame_Data/StreamingAssets (if it doesn't
         already exist) and writes the username string into it.
         """
-        # -----------------------------------------------------------------
-        # TODO: replace this with however you want to source the username,
-        #       e.g. self.app.user_entry.get() or a dedicated attribute.
-        # -----------------------------------------------------------------
         USERNAME = self.app.username
 
         import os
@@ -177,9 +172,7 @@ class GameRunner:
         for folder in scf.version_buttons:
             if folder["name"] == app.selected_folder:
                 version_name = folder["buttons"][scf.selected_version].cget("text")
-                zip_path = (
-                    f"{app.versions_path}{app.selected_folder}\\{version_name}.zip"
-                )
+                zip_path = join(app.versions_path, app.selected_folder, f"{version_name}.zip")
                 return version_name, zip_path
         return None
 
@@ -262,8 +255,8 @@ class GameRunner:
 
     def _inject_mod(self, mod_name):
         """Extract Mod from ZIP and put it in BepinEx plugins folder"""
-        mod_path = join(self.app.mods_path, mod_name)
-        makedirs(mod_path, exist_ok=True)
+        mod_path = join(self.app.mods_path, f"{mod_name}.zip")
+        print(f"mod path: {mod_path}")
         target_path = join(self.app.temp_perm_path, "BepinEx", "plugins")
         success = extract_zip(mod_path, target_path)
         return success

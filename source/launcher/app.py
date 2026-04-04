@@ -10,9 +10,7 @@ App only handles:
 import os
 import sys
 
-# --- STEP 1: FIX PATHS IMMEDIATELY ---
 if getattr(sys, 'frozen', False):
-    # In PyInstaller, all your folders are inside sys._MEIPASS
     BASE_PATH = sys._MEIPASS
     if BASE_PATH not in sys.path:
         sys.path.insert(0, BASE_PATH)
@@ -99,6 +97,9 @@ class App(CTk):
         self.selected_folder: str = ""
         self.username: str = ""
         self.refresh_folders(False)
+
+        # ---Cleanup ---
+        self.cleanup()
 
         # --- Build UI ---
         self._build_options_frame()
@@ -351,7 +352,8 @@ class App(CTk):
         initial_mods = []
         if os.path.exists(self.mods_path):
             initial_mods = [
-                f for f in os.listdir(self.mods_path) 
+                os.path.splitext(f)[0] # This grabs "mod_name" instead of "mod_name.zip"
+                for f in os.listdir(self.mods_path) 
                 if os.path.isfile(os.path.join(self.mods_path, f)) and f.lower().endswith(".zip")
             ]
 

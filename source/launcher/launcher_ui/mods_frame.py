@@ -43,7 +43,3 @@ class ModsFrame(CTkScrollableFrame):
             )
             cb.grid(row=i, column=0, padx=10, pady=(10, 0), sticky="we")
             self.checkboxes.append(cb)
-
-    # def get_selected_mods(self) -> list[str]:
-    #     """Returns a list of names that are currently checked."""
-    #     return [name for name, var in self.mod_vars.items() if var.get()]
