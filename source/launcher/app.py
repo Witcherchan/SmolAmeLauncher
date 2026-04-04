@@ -32,7 +32,7 @@ from tkinter import font as tkfont
 
 from launcher_core import StatsManager, GameRunner
 from launcher_ui import VersionsFrame, ModsFrame
-from launcher_ui.dialogs import RemoveSelectedFiles, DeleteSelectedFilesPopup, CreateNewCategory
+from launcher_ui.dialogs import RemoveSelectedFiles, DeleteSelectedFilesPopup, DeleteSelectedModsPopup, CreateNewCategory
 from launcher_utils.file_utils import list_subfolders, import_files_dialog
 from launcher_utils.format_utils import format_playtime, truncate_label
 
@@ -96,6 +96,7 @@ class App(CTk):
         self.sorted_folders: list[dict] = []
         self.selected_folder: str = ""
         self.username: str = ""
+        self.mod_files: list[str] = []
         self.refresh_folders(False)
 
         # ---Cleanup ---
@@ -349,15 +350,14 @@ class App(CTk):
         self.mods_title.configure(font=("Ariel", 18))
 
         # Define your mods list (or pull from self.settings)
-        initial_mods = []
         if os.path.exists(self.mods_path):
-            initial_mods = [
-                os.path.splitext(f)[0] # This grabs "mod_name" instead of "mod_name.zip"
+            self.mod_files = [
+                os.path.splitext(f)[0]
                 for f in os.listdir(self.mods_path) 
                 if os.path.isfile(os.path.join(self.mods_path, f)) and f.lower().endswith(".zip")
             ]
 
-        self.scrollable_mods = ModsFrame(self.mods_frame, self, initial_mods)
+        self.scrollable_mods = ModsFrame(self.mods_frame, self, self.mod_files)
         self.scrollable_mods.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
 
         self.import_mods_button = CTkButton(
@@ -367,7 +367,16 @@ class App(CTk):
             fg_color=self.colors["button_on"],
             hover_color=self.colors["button_hover"],
         )
-        self.import_mods_button.grid(row=2, column=0, padx=10, pady=10, sticky="ew")
+        self.import_mods_button.grid(row=2, column=0, padx=10, pady=(0,0), sticky="ew")
+
+        self.remove_mods_button = CTkButton(
+            self.mods_frame,
+            text="Remove Mods",
+            command=lambda: DeleteSelectedModsPopup(self),
+            fg_color=self.colors["button_on"],
+            hover_color=self.colors["button_hover"],
+        )
+        self.remove_mods_button.grid(row=3, column=0, padx=10, pady=(10, 5), sticky="ew")
 
     def _build_play_frame(self):
         self.play_frame = CTkFrame(
@@ -461,13 +470,14 @@ class App(CTk):
 
         if os.path.exists(self.mods_path):
             # os.path.splitext(f)[0] grabs the filename without the extension
-            mod_files = [
+            self.mod_files = [
                 os.path.splitext(f)[0] 
                 for f in os.listdir(self.mods_path) 
                 if os.path.isfile(os.path.join(self.mods_path, f))
             ]
         else:
-            mod_files = []
+            os.mkdir(self.mods_path)
+            self.mod_files = []
         
         if refresh:
             combo = [f["name"] for f in self.sorted_folders]
@@ -480,7 +490,7 @@ class App(CTk):
             self.scrollable_button_frame.create_version_buttons()
             
             if hasattr(self, "scrollable_mods"):
-                self.scrollable_mods.render_mods(mod_files)
+                self.scrollable_mods.render_mods(self.mod_files)
             
             self.change_folder(self.selected_folder)
 
@@ -542,13 +552,17 @@ class App(CTk):
     # ==================================================================
 
     def import_files(self):
-        path_folder = os.path.join(self.versions_path, self.selected_folder) 
+        path_folder = os.path.join(self.versions_path, self.selected_folder)
+        if not os.path.exists(path_folder):
+            os.mkdir(path_folder)
         copied = import_files_dialog(path_folder)
         if copied:
             self.refresh_folders(True)
 
     def import_mods(self):
         path_folder = self.mods_path
+        if not os.path.exists(path_folder):
+            os.mkdir(path_folder)
         copied = import_files_dialog(path_folder)
         if copied:
             self.refresh_folders(True)
