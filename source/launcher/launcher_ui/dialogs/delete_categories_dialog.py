@@ -3,6 +3,7 @@ Dialog for removing one or more version categories (folders).
 """
 
 from shutil import rmtree
+from os.path import join
 
 from .base_checklist_dialog import BaseChecklistDialog
 
@@ -36,7 +37,7 @@ class DeleteSelectedFilesPopup(BaseChecklistDialog):
             return
 
         for name in selected:
-            folder_path = self.parent.versions_path + name
+            folder_path = join(self.parent.versions_path, name)
             rmtree(folder_path)
             print("Removing: " + folder_path)
 

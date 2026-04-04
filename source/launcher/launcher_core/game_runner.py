@@ -221,7 +221,7 @@ class GameRunner:
             return False
 
         app.button_play.configure(text="Running TAS...")
-        tas_exe = app.temp_perm_path + app.tas_exe_path
+        tas_exe = join(app.temp_perm_path, app.tas_exe_path)
         try:
             self.tas_process = Popen([tas_exe])
         except Exception:

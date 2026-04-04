@@ -25,7 +25,7 @@ def list_subfolders(base_path: str) -> list[dict]:
     """
     folders = []
     for f_name in listdir(base_path):
-        f_path = base_path + f_name
+        f_path = join(base_path, f_name)
         if isdir(f_path):
             versions = list_zip_versions(f_path)
             folders.append({"name": f_name, "versions": versions})
@@ -75,7 +75,7 @@ def copy_directory_contents(src: str, dest: str, on_error=None) -> bool:
         for file_name in listdir(src):
             file_path = join(src, file_name)
             if isdir(file_path):
-                dest_dir = dest + "\\" + file_name
+                dest_dir = join(dest, file_name) 
                 print(f'Copying folder: "{file_path}" to: "{dest_dir}"')
                 copytree(file_path, dest_dir, dirs_exist_ok=True)
             else:

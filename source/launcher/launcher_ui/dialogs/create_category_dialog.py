@@ -3,6 +3,7 @@ Dialog for creating a new version category (folder).
 """
 
 from os import mkdir
+from os.path import join
 
 from customtkinter import CTkToplevel, CTkFrame, CTkLabel, CTkEntry, CTkButton
 
@@ -102,7 +103,7 @@ class CreateNewCategory(CTkToplevel):
             )
             return
 
-        mkdir(self.parent.versions_path + category_name)
+        mkdir(join(self.parent.versions_path, category_name))
         print("Created category:", category_name)
         self.parent.refresh_folders(True)
         self.destroy()
