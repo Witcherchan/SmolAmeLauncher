@@ -58,14 +58,25 @@ class CreateNewCategory(CTkToplevel):
             row=0, column=0, padx=10, pady=(10, 0), columnspan=2, sticky="nsew"
         )
 
+        # Entry field now sits in Row 1 and spans both columns
         self.text_typer = CTkEntry(
             self.frame,
             placeholder_text="For example: Speedrun",
             font=("Arial", 28),
         )
         self.text_typer.grid(
-            row=2, column=0, padx=10, pady=10, sticky="nsew", columnspan=2
+            row=1, column=0, padx=10, pady=10, sticky="nsew", columnspan=2
         )
+
+        # Buttons sit in Row 2
+        cancel_btn = CTkButton(
+            self.frame,
+            text="Cancel",
+            command=self.destroy,
+            fg_color=self.parent.colors["button_on"],
+            hover_color=self.parent.colors["button_hover"],
+        )
+        cancel_btn.grid(row=2, column=0, padx=(10, 5), pady=10, sticky="nsew")
 
         confirm_btn = CTkButton(
             self.frame,
@@ -74,16 +85,7 @@ class CreateNewCategory(CTkToplevel):
             fg_color=self.parent.colors["button_on"],
             hover_color=self.parent.colors["button_hover"],
         )
-        confirm_btn.grid(row=2, column=1, padx=10, pady=10, sticky="nsew")
-
-        cancel_btn = CTkButton(
-            self.frame,
-            text="Cancel",
-            command=self.destroy,
-            fg_color=self.parent.colors["button_on"],
-            hover_color=self.parent.colors["button_hover"],
-        )
-        cancel_btn.grid(row=2, column=0, padx=(10, 0), pady=10, sticky="nsew")
+        confirm_btn.grid(row=2, column=1, padx=(5, 10), pady=10, sticky="nsew")
 
     def confirm(self):
         category_name = self.text_typer.get()
