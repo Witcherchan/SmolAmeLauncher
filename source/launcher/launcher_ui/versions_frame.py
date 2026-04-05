@@ -5,7 +5,6 @@ Scrollable frame that renders per-category version buttons.
 from customtkinter import CTkScrollableFrame, CTkButton
 from threading import Thread
 
-
 class VersionsFrame(CTkScrollableFrame):
     def __init__(self, master, app):
         super().__init__(master)

@@ -1,2 +1,3 @@
 from .stats_manager import StatsManager
 from .game_runner import GameRunner
+from .paths_manager import PathsManager

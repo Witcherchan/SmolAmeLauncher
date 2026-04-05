@@ -9,16 +9,8 @@ App only handles:
 
 import os
 import sys
-
-if getattr(sys, 'frozen', False):
-    BASE_PATH = sys._MEIPASS
-    if BASE_PATH not in sys.path:
-        sys.path.insert(0, BASE_PATH)
-else:
-    # Running from source, go up one level from 'launcher/'
-    BASE_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    if BASE_PATH not in sys.path:
-        sys.path.insert(0, BASE_PATH)
+from os.path import exists
+from platformdirs import user_data_dir
 
 import json
 from atexit import register
@@ -27,33 +19,34 @@ from traceback import format_exception
 from tkinter import PhotoImage
 
 from customtkinter import CTk, CTkFrame, CTkLabel, CTkButton, CTkOptionMenu, CTkCheckBox, CTkEntry
-from os import getcwd
+from os import getcwd, mkdir
 from tkinter import font as tkfont
 
-from launcher_core import StatsManager, GameRunner
+from launcher_core import StatsManager, GameRunner, PathsManager
 from launcher_ui import VersionsFrame, ModsFrame
 from launcher_ui.dialogs import RemoveSelectedFiles, DeleteSelectedFilesPopup, DeleteSelectedModsPopup, CreateNewCategory
 from launcher_utils.file_utils import list_subfolders, import_files_dialog
 from launcher_utils.format_utils import format_playtime, truncate_label
+from launcher_utils.constants import APPLICATION_NAME,AUTHOR_NAME,LOCAL_PATH,BASE_PATH,BASE_APPLICATION_SIZE,MIN_APPLICATION_SIZE
+
+if not exists(LOCAL_PATH):
+    os.makedirs(LOCAL_PATH)
 
 class App(CTk):
     def __init__(self):
         super().__init__()
 
         # --- Paths ---
-        self.program_path   = BASE_PATH
-        self.icon_ico_path  = os.path.join(self.program_path, "system", "images", "icon_main_app.ico")
-        self.icon_png_path  = os.path.join(self.program_path, "system", "images", "icon_add_app.png")
-        self.icon_png       = PhotoImage(file=self.icon_png_path)
-        
-        self.versions_path  = os.path.join(self.program_path, "versions")
-        self.mods_path      = os.path.join(self.program_path, "mods")
-        self.setting_path   = os.path.join(self.program_path, "system", "settings.json")
-        self.stats_path     = os.path.join(self.program_path, "system", "stats.json")
-        self.bepinex_path   = os.path.join(self.program_path, "BepinEx")
-        self.tas_path       = os.path.join(self.program_path, "TAS")
-        self.tas_exe_path   = os.path.join(self.tas_path, "TAS.Studio", "TAS.Studio.exe")
-        self.temp_perm_path = os.path.join(self.program_path, "system", "temp")
+        self.paths_mgr = PathsManager(self)
+
+        try:
+            self.paths_mgr.validate_paths()
+            self.paths_mgr.copy_paths()
+        except:
+            print("Something when wrong during validating paths. Application has been closed!")
+            sys.exit()
+
+        os.startfile(self.local_path)
 
         # --- Settings ---
         with open(self.setting_path, "r") as f:
@@ -65,8 +58,8 @@ class App(CTk):
         try:
             self.stats_mgr.validate_and_load()
         except Exception:
-            print("--- Something went wrong while validating stats. Stopping. ---")
-            exit()
+            print("Something went wrong during validating stats. Application has been closed!")
+            sys.exit()
 
         # Expose stats dict directly for backward-compat with existing widget code
         self.stats = self.stats_mgr.stats
@@ -80,17 +73,17 @@ class App(CTk):
         excepthook = self.handle_crash   # noqa: F841 (intentional reassignment)
 
         # --- Window ---
-        self.title("Smol Ame Launcher")
-        self.geometry("900x640")
-        self.minsize(700, 500)
+        self.title(APPLICATION_NAME)
+        self.geometry(self.geometry_from_tuple(BASE_APPLICATION_SIZE))
+        self.minsize(MIN_APPLICATION_SIZE[0],MIN_APPLICATION_SIZE[1])
         self.resizable(True, True)
         self.iconbitmap(self.icon_ico_path)
         self.configure(fg_color=self.colors["application_fg"])
 
-        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=0)
         self.grid_columnconfigure(1, weight=3)
-        self.grid_columnconfigure(1, weight=1)
-        self.grid_rowconfigure(2, weight=1)
+        self.grid_columnconfigure(2, weight=0)
+        self.grid_rowconfigure(2, weight=3)
 
         # --- Data ---
         self.sorted_folders: list[dict] = []
@@ -278,6 +271,8 @@ class App(CTk):
         self.description_frame.grid_rowconfigure(3, weight=1)
         self.description_frame.grid_rowconfigure(4, weight=1)
         self.description_frame.grid_rowconfigure(5, weight=1)
+
+        self.description_frame.grid_propagate(False)
 
         self.folder_tile = CTkLabel(
             self.description_frame,
@@ -612,6 +607,12 @@ class App(CTk):
         print("".join(format_exception(exc_type, exc_value, exc_traceback)))
         self.cleanup()
 
+    # ==================================================================
+    # Other
+    # ==================================================================
+
+    def geometry_from_tuple(self,_size: tuple) -> str:
+        return f"{_size[0]}x{_size[1]}"
 
 if __name__ == "__main__":
     app = App()

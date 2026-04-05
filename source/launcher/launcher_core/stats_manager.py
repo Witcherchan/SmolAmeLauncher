@@ -4,7 +4,7 @@ Handles loading, saving, and validating the stats.json file.
 
 from json import load, dump
 from datetime import datetime
-
+from os.path import exists
 
 class StatsManager:
     """Manages version and total play-time statistics."""
@@ -24,15 +24,6 @@ class StatsManager:
         Raises SystemExit if something goes fatally wrong.
         """
         print("--- Started validating stats ---")
-
-        # Load (or reset) the file
-        try:
-            with open(self.stats_path, "r") as f:
-                self.stats = load(f)
-            print("Stats.json loaded successfully!")
-        except Exception:
-            self.stats = {}
-            print("Stats.json invalid or missing – starting fresh.")
 
         # Validate total_play_time
         if "total_play_time" not in self.stats:

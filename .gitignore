@@ -47,3 +47,4 @@ Thumbs.db
 ### IDEs ###
 .vscode/
 .idea/
+source/system/stats.json
