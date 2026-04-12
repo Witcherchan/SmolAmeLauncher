@@ -27,7 +27,7 @@ from launcher_ui import VersionsFrame, ModsFrame
 from launcher_ui.dialogs import RemoveSelectedFiles, DeleteSelectedFilesPopup, DeleteSelectedModsPopup, CreateNewCategory
 from launcher_utils.file_utils import list_subfolders, import_files_dialog, import_stats_dialog
 from launcher_utils.format_utils import format_playtime, truncate_label
-from launcher_utils.constants import APPLICATION_NAME,AUTHOR_NAME,LOCAL_PATH,BASE_PATH,BASE_APPLICATION_SIZE,MIN_APPLICATION_SIZE
+from launcher_utils.constants import APPLICATION_NAME,LOCAL_PATH,BASE_APPLICATION_SIZE,MIN_APPLICATION_SIZE
 
 if not exists(LOCAL_PATH):
     os.makedirs(LOCAL_PATH)
@@ -37,11 +37,10 @@ class App(CTk):
         super().__init__()
 
         # --- Paths ---
-        self.paths_mgr = PathsManager(self)
+        self.paths_manager = PathsManager(self)
 
         try:
-            self.paths_mgr.validate_paths()
-            self.paths_mgr.copy_paths()
+            self.paths_manager.validate_paths()
         except:
             print("Something when wrong during validating paths. Application has been closed!")
             sys.exit()
@@ -49,12 +48,12 @@ class App(CTk):
         # os.startfile(self.local_path)
 
         # --- Settings ---
-        with open(self.setting_path, "r") as f:
+        with open(self.paths_manager.settings, "r") as f:
             self.settings = json.load(f)
         self.colors = self.settings["colors"]
 
         # --- Stats ---
-        self.stats_mgr = StatsManager(self.stats_path)
+        self.stats_mgr = StatsManager(self.paths_manager.stats)
         try:
             self.stats_mgr.validate_and_load()
         except Exception:
@@ -77,7 +76,7 @@ class App(CTk):
         self.geometry(self.geometry_from_tuple(BASE_APPLICATION_SIZE))
         self.minsize(MIN_APPLICATION_SIZE[0],MIN_APPLICATION_SIZE[1])
         self.resizable(True, True)
-        self.iconbitmap(self.icon_ico_path)
+        self.iconbitmap(self.paths_manager.icon_ico)
         self.configure(fg_color=self.colors["application_fg"])
 
         self.grid_columnconfigure(0, weight=0)
@@ -355,11 +354,11 @@ class App(CTk):
         self.mods_title.configure(font=("Ariel", 18))
 
         # Define your mods list (or pull from self.settings)
-        if os.path.exists(self.mods_path):
+        if os.path.exists(self.paths_manager.mods):
             self.mod_files = [
                 os.path.splitext(f)[0]
-                for f in os.listdir(self.mods_path) 
-                if os.path.isfile(os.path.join(self.mods_path, f)) and f.lower().endswith(".zip")
+                for f in os.listdir(self.paths_manager.mods)
+                if os.path.isfile(os.path.join(self.paths_manager.mods, f)) and f.lower().endswith(".zip")
             ]
 
         self.scrollable_mods = ModsFrame(self.mods_frame, self, self.mod_files)
@@ -394,7 +393,7 @@ class App(CTk):
         )
         self.play_frame.grid_propagate(False)
         self.play_frame.grid(row=3, column=0, padx=10, pady=10, sticky="nsew", columnspan=3)
-        
+
         self.play_frame.grid_columnconfigure(0, weight=1)
         self.play_frame.grid_columnconfigure(1, weight=2)
         self.play_frame.grid_columnconfigure(2, weight=2)
@@ -470,20 +469,20 @@ class App(CTk):
         self.scrollable_button_frame.switch_folders(self.selected_folder)
 
     def refresh_folders(self, refresh: bool):
-        self.sorted_folders = list_subfolders(self.versions_path)
-        
+        self.sorted_folders = list_subfolders(self.paths_manager.versions)
 
-        if os.path.exists(self.mods_path):
+
+        if os.path.exists(self.paths_manager.mods):
             # os.path.splitext(f)[0] grabs the filename without the extension
             self.mod_files = [
-                os.path.splitext(f)[0] 
-                for f in os.listdir(self.mods_path) 
-                if os.path.isfile(os.path.join(self.mods_path, f))
+                os.path.splitext(f)[0]
+                for f in os.listdir(self.paths_manager.mods)
+                if os.path.isfile(os.path.join(self.paths_manager.mods, f))
             ]
         else:
-            os.mkdir(self.mods_path)
+            os.mkdir(self.paths_manager.mods)
             self.mod_files = []
-        
+
         if refresh:
             combo = [f["name"] for f in self.sorted_folders]
             self.selected_folder = combo[0] if combo else ""
@@ -493,10 +492,10 @@ class App(CTk):
             self.scrollable_button_frame.remove_version_buttons()
             self.scrollable_button_frame.folders = self.sorted_folders
             self.scrollable_button_frame.create_version_buttons()
-            
+
             if hasattr(self, "scrollable_mods"):
                 self.scrollable_mods.render_mods(self.mod_files)
-            
+
             self.change_folder(self.selected_folder)
 
         print("Folders refreshed: " + str(self.sorted_folders))
@@ -557,7 +556,7 @@ class App(CTk):
     # ==================================================================
 
     def import_files(self):
-        path_folder = os.path.join(self.versions_path, self.selected_folder)
+        path_folder = os.path.join(self.paths_manager.versions, self.selected_folder)
         if not os.path.exists(path_folder):
             os.mkdir(path_folder)
         copied = import_files_dialog(path_folder)
@@ -565,7 +564,7 @@ class App(CTk):
             self.refresh_folders(True)
 
     def import_mods(self):
-        path_folder = self.mods_path
+        path_folder = self.paths_manager.mods
         if not os.path.exists(path_folder):
             os.mkdir(path_folder)
         copied = import_files_dialog(path_folder)
@@ -573,7 +572,7 @@ class App(CTk):
             self.refresh_folders(True)
 
     def import_stats(self):
-        path_file = self.stats_path
+        path_file = self.paths_manager.stats
         copied = import_stats_dialog(path_file)
         if copied:
             self.stats_mgr.validate_and_load()
@@ -597,7 +596,7 @@ class App(CTk):
         if hasattr(self, "_cleaned") and self._cleaned:
             return
         self._cleaned = True
-        
+
         from launcher_utils.file_utils import clear_folder
         print("Running cleanup...")
 
@@ -605,9 +604,9 @@ class App(CTk):
         if hasattr(self, "game_runner"):
             self.game_runner.terminate_game()
 
-        if hasattr(self, "temp_perm_path") and os.path.exists(self.temp_perm_path):
+        if hasattr(self, "temp_perm_path") and os.path.exists(self.paths_manager.temp_perm):
             print("Cleaning temporary folder...")
-            clear_folder(self.temp_perm_path)
+            clear_folder(self.paths_manager.temp_perm)
 
         if hasattr(self, "stats_mgr"):
             print("Saving stats...")

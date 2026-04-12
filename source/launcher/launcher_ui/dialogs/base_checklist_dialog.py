@@ -137,5 +137,5 @@ class BaseChecklistDialog(CTkToplevel):
         return [b.get() for b in self.buttons if b.get() != "False"]
 
     def confirm(self):
-        """Override in subclasses to handle the confirm action."""
+        """Override in subclasses to handle the confirmation action."""
         raise NotImplementedError

@@ -9,7 +9,7 @@ from os import makedirs
 from os.path import join, exists
 from tkinter import messagebox as mb
 
-from launcher_utils.file_utils import extract_zip, copy_directory_contents, find_exe, clear_folder
+from source.launcher.launcher_utils.file_utils import extract_zip, copy_directory_contents, find_exe, clear_folder
 
 
 class GameRunner:

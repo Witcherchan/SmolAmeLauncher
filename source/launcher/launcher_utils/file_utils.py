@@ -1,7 +1,7 @@
 """
 Utility functions for file and folder operations.
 """
-
+import os
 from os import listdir, remove, mkdir
 from os.path import isfile, isdir, join
 from shutil import copy, copytree, rmtree
@@ -148,3 +148,23 @@ def import_stats_dialog(dest_file: str) -> bool:
             except Exception as e:
                 print(f"Failed to import file: {e}")
                 return False
+
+def get_path_backwards(_back_amount = 0) -> str:
+    """
+    Get path to the folder x amount of steps back.
+
+    _back_amount - Amount of steps back.
+
+    Returns - String path
+    """
+
+    _path = __file__
+
+    try:
+        for x in range(_back_amount):
+            _path = os.path.dirname(_path)
+    except Exception as e:
+        print(f"Failed to get path: {e}")
+        _path = __file__
+
+    return _path

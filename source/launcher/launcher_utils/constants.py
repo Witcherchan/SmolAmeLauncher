@@ -1,15 +1,16 @@
-import os
+
 import sys
 
 from platformdirs import user_data_dir
+from .file_utils import get_path_backwards
 
 if getattr(sys, 'frozen', False):
     BASE_PATH = sys._MEIPASS
     if BASE_PATH not in sys.path:
         sys.path.insert(0, BASE_PATH)
 else:
-    # Running from source, go up one level from 'launcher/'
-    BASE_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    # Running from source, go up 3 times from constants.py
+    BASE_PATH = get_path_backwards(3)
     if BASE_PATH not in sys.path:
         sys.path.insert(0, BASE_PATH)
 

@@ -20,31 +20,48 @@ class PathsManager:
         """
         Create paths on startup.
         """
-        self.paths = {
-            "local": LOCAL_PATH,
-            "program": BASE_PATH
-        }
+        # Base paths
+        self.local = LOCAL_PATH
+        self.program = BASE_PATH
 
         # Folders
+        self.system = join(self.program, "system")
+        self.mods = join(self.program, "mods")
+        self.tas = join(self.program, "tas")
+        self.versions = join(self.program, "versions")
+        self.bepinex = join(self.program, "BepinEx")
 
-        self.paths["system"]    = join(self.paths["program"], "system")
-        self.paths["mods"]      = join(self.paths["program"], "mods")
-        self.paths["tas"]       = join(self.paths["program"], "tas")
-        self.paths["versions"]  = join(self.paths["program"], "versions")
-        self.paths["bepinex"]   = join(self.paths["program"], "BepinEx")
-
-        self.paths["images"]    = join(self.paths["system"], "images")
-        self.paths["temp_perm"] = join(self.paths["system"], "temp")
+        self.images = join(self.system, "images")
+        self.temp_perm = join(self.system, "temp")
 
         # Files
-        self.paths["icon_ico"]  = join(self.paths["images"], "icon_main_app.ico")
-        self.paths["icon_png"]  = join(self.paths["images"], "icon_add_app.png")
+        self.icon_ico = join(self.images, "icon_main_app.ico")
+        self.icon_png = join(self.images, "icon_add_app.png")
 
-        self.paths["setting"]  = join(self.paths["system"], "settings.json")
+        self.settings = join(self.system, "settings.json")
 
-        self.paths["stats"]     = join(self.paths["local"], "stats.json")
+        self.stats = join(self.local, "stats.json")
 
-        self.paths["tas_exe"]   = join(self.paths["tas"], "TAS.Studio", "TAS.Studio.exe")
+        self.tas_exe = join(self.tas, "TAS.Studio", "TAS.Studio.exe")
+
+        print(f"Creating dictionary for compatibility")
+
+        self.paths = {
+            "local": self.local,
+            "program": self.program,
+            "system": self.system,
+            "mods": self.mods,
+            "tas": self.tas,
+            "versions": self.versions,
+            "bepinex": self.bepinex,
+            "images": self.images,
+            "temp_perm": self.temp_perm,
+            "icon_ico": self.icon_ico,
+            "icon_png": self.icon_png,
+            "settings": self.settings,
+            "stats": self.stats,
+            "tas_exe": self.tas_exe,
+        }
 
         print("--- Finished creating paths ---")
 
